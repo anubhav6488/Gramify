@@ -7,7 +7,6 @@ const midnight_cron = require('../jobs/midnight_cron');
 // Brands Route
 
 const firecmsapis = require('../routes/firecmsapis')
-const leadesapis = require('../routes/leadesapis')
 const sponsorapis = require('../routes/sponsorapis')
 
 const seller = require("../routes/onboarding");
@@ -15,8 +14,6 @@ const seller = require("../routes/onboarding");
 
 // Firebase
 router.use('/fire', firecmsapis)
-//Firebase leades
-router.use('/leads', leadesapis)
 //Firebase sponsorapiss
 router.use('/sponsor', sponsorapis)
 
