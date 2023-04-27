@@ -5,10 +5,25 @@ const router = express.Router();
 const midnight_cron = require('../jobs/midnight_cron');
 
 // Brands Route
-const boiler_plate_route = require('../routes/boiler_plate')
+const zohoapis = require('../routes/zohoapis')
+
+const firecmsapis = require('../routes/firecmsapis')
+const leadesapis = require('../routes/leadesapis')
+const sponsorapis = require('../routes/sponsorapis')
+
+const seller = require("../routes/onboarding");
 
 // Users
-router.use('/boiler-plate', boiler_plate_route)
+router.use('/zohoapis', zohoapis)
+
+// Firebase
+router.use('/fire', firecmsapis)
+//Firebase leades
+router.use('/leads', leadesapis)
+//Firebase sponsorapiss
+router.use('/sponsor', sponsorapis)
+
+router.use('/seller', seller)
 
 // Scheduled Jobs
 router.use('/cron', midnight_cron)

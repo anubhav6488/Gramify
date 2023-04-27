@@ -35,46 +35,85 @@ const smtpTransport = nodemailer.createTransport({
 });
 
 let self = module.exports = {
-    is_exist: async function (query) {
+    is_exist: async function (query, connection = false) {
         return new Promise((resolve, reject) => {
             try {
-                let exist_query = `SELECT EXISTS(` + query + `) as 'EXISTS'`
-                pool.query(exist_query, (err, results, fields) => {
-                    if (err) {
-                        console.log(err)
-                        reject(err)
-                    } else {
-                        resolve(results[0].EXISTS);
-                    }
-                })
+                if (connection) {
+                    let exist_query = `SELECT EXISTS(` + query + `) as 'EXISTS'`
+                    connection.query(exist_query, (err, results, fields) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(results[0].EXISTS);
+                        }
+                    })
+                } else {
+                    let exist_query = `SELECT EXISTS(` + query + `) as 'EXISTS'`
+                    pool.query(exist_query, (err, results, fields) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(results[0].EXISTS);
+                        }
+                    })
+                }
             }
-            catch (e) {
-                reject(e)
+            catch (err) {
+                console.log(err)
+                let response = {
+                    code: 500,
+                    result: err
+                }
+                reject(response)
             }
         })
     },
-    insert: async function (query) {
+    insert: async function (query, connection = false) {
         return new Promise((resolve, reject) => {
             try {
-                pool.query(query, (err, results, fields) => {
-                    if (err) {
-                        console.log(err)
-                        let response = {
-                            code: 500,
-                            result: err
+                if (connection) {
+                    connection.query(query, (err, results, fields) => {
+                        if (err) {
+                            console.log(err)
+                            let response = {
+                                code: 500,
+                                result: err
+                            }
+                            reject(response)
+                        } else {
+                            let response = {
+                                code: 200,
+                                result: results.insertId
+                            }
+                            resolve(response);
                         }
-                        reject(response)
-                    } else {
-                        let response = {
-                            code: 200,
-                            result: results.insertId
+                    })
+                } else {
+                    pool.query(query, (err, results, fields) => {
+                        if (err) {
+                            console.log(err)
+                            let response = {
+                                code: 500,
+                                result: err
+                            }
+                            reject(response)
+                        } else {
+                            let response = {
+                                code: 200,
+                                result: results.insertId
+                            }
+                            resolve(response);
                         }
-                        resolve(response);
-                    }
-                })
+                    })
+                }
             }
-            catch (e) {
-                reject(e)
+            catch (err) {
+                console.log(err)
+                let response = {
+                    code: 500,
+                    result: err
+                }
+                reject(response)
             }
         })
     },
@@ -142,6 +181,39 @@ let self = module.exports = {
             }
             catch (e) {
                 resolve([]);
+            }
+        })
+    },
+    fetch_object: async function (query, connection = false) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (connection) {
+                    connection.query(query, (err, results, fields) => {
+                        if (err) {
+                            console.log(err)
+                            reject(err)
+                        } else {
+                            resolve(results);
+                        }
+                    })
+                } else {
+                    pool.query(query, (err, results, fields) => {
+                        if (err) {
+                            console.log(err)
+                            reject(err)
+                        } else {
+                            resolve(results);
+                        }
+                    })
+                }
+            }
+            catch (err) {
+                console.log(err)
+                let response = {
+                    code: 500,
+                    result: err
+                }
+                reject(response)
             }
         })
     },
@@ -394,4 +466,73 @@ let self = module.exports = {
             }
         })
     },
+    send_otp: async function (receiver, otp, template) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let API_KEY = `671ce180-521b-11e9-8806-0200cd936042`;
+
+                var new_res = [];
+                var url = `/API/V1/${API_KEY}/SMS/${receiver}/${otp}/${template}`;
+                var options = {
+                    method: "POST",
+                    hostname: "2factor.in",
+                    port: null,
+                    path: url,
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded",
+                    },
+                };
+
+                var req = http.request(options, function (response) {
+                    var chunks = [];
+
+                    response.on("data", function (chunk) {
+                        chunks.push(chunk);
+                    });
+
+                    response.on("end", function () {
+                        var body = Buffer.concat(chunks);
+                        var sms_res = body.toString();
+                        new_res = JSON.parse(sms_res);
+                        console.log(new_res);
+                        if (new_res.Status == "Success") {
+                            resolve({ code: 200, session_id: new_res.Details });
+                        } else {
+                            reject({ code: 500 });
+                        }
+                    });
+                });
+
+                req.write(qs.stringify({}));
+                req.end();
+            } catch (e) {
+                console.log(e);
+                reject({ code: 500 });
+            }
+        });
+    },
+
+    get_connection: async function () {
+        return new Promise((resolve, reject) => {
+            pool.getConnection(function (err, connection) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(connection);
+            });
+        })
+    },
+
+    commit_connection: async function (connection) {
+        return new Promise((resolve, reject) => {
+            connection.commit((err) => {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                } else {
+                    resolve(true)
+                }
+            })
+        })
+    }
 }

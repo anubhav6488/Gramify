@@ -25,7 +25,7 @@ pool.getConnection(function (err, connection) {
             console.error('Database connection was refused.')
         }
     } else {
-        // console.log("Database Connected Successfully");
+        console.log("Database Connected Successfully");
         pool.beginTransaction = connection.beginTransaction;
         pool.rollback = connection.rollback;
         pool.commit = connection.commit;
