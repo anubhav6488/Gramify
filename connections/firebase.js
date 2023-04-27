@@ -8,12 +8,6 @@ const firebaseConfig = {
   storageBucket: "gramify-anubhav.appspot.com",
   messagingSenderId: "556809714050",
   appId: "1:556809714050:web:908e2aa3c271089c24779b",
-  // apiKey: "AIzaSyAxnjZk50PH1szrAUrOQkB0X-K5s-JL1PM",
-  // authDomain: "staging-ofex.firebaseapp.com",
-  // projectId: "staging-ofex",
-  // storageBucket: "staging-ofex.appspot.com",
-  // messagingSenderId: "11892327779",
-  // appId: "1:11892327779:web:81e1e0c56b4d225d5aff56"
 };
 
 const app = initializeApp(firebaseConfig);
