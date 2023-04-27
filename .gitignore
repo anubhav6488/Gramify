@@ -1,0 +1,13 @@
+# NodeJS specific #
+.nyc_output/
+coverage/
+node_modules/
+npm-debug.log
+.config.js
+package-lock.json
+test/*.log/
+Reference Data/
+dist/
+old 30-12-2019/
+images/
+
