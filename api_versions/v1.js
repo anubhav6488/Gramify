@@ -5,7 +5,6 @@ const router = express.Router();
 const midnight_cron = require('../jobs/midnight_cron');
 
 // Brands Route
-const zohoapis = require('../routes/zohoapis')
 
 const firecmsapis = require('../routes/firecmsapis')
 const leadesapis = require('../routes/leadesapis')
@@ -13,8 +12,6 @@ const sponsorapis = require('../routes/sponsorapis')
 
 const seller = require("../routes/onboarding");
 
-// Users
-router.use('/zohoapis', zohoapis)
 
 // Firebase
 router.use('/fire', firecmsapis)
