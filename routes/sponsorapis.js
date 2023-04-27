@@ -11,7 +11,7 @@ router.get(
   );
   router.post(
     "/sponsorship/details",
-    authenticator.authenticator,
+    // authenticator.authenticator,
     controller.post_sponsorship
   );
   router.put(

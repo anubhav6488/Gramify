@@ -35,7 +35,7 @@ let self = (module.exports = {
     status,
     is_active,
     created_at,
-    id,
+    // id,
     Reseller_name
   ) {
     return new Promise(async (resolve, reject) => {
@@ -49,7 +49,7 @@ let self = (module.exports = {
           status: status,
           is_active: "active",
           created_at: serverTimestamp(),
-          reseller_id: id,
+          // reseller_id: id,
           Reseller_name: Reseller_name,
         };
         console.log(data);

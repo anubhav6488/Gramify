@@ -50,8 +50,8 @@ exports.post_sponsorship = exports.create_sponsorship = async (
     } = req.body;
     console.log(req.body);
 
-    let { id } = req.decoded;
-    console.log("_____________________________________________",req.decoded)
+    // let { id } = req.decoded;
+    // console.log("_____________________________________________",req.decoded)
 
 
     let response = await Operations.create_sponsorship(
@@ -63,7 +63,7 @@ exports.post_sponsorship = exports.create_sponsorship = async (
       status,
       is_active,
       created_at,
-      id,
+      // id,
       Reseller_name
     );
 
