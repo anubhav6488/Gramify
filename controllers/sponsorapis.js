@@ -32,9 +32,9 @@ exports.read_all_sponsorship = async (req, res, next) => {
 };
 exports.read_all_idpass = async (req, res, next) => {
   try {
-    let { Name } = req.body;
+    let { Name,password,Email_Address } = req.body;
 
-    let response = await Operations.fetch_all_idpass(Name);
+    let response = await Operations.fetch_all_idpass(Name,password,Email_Address);
 
     res.status(response.code).send(response);
   } catch (error) {

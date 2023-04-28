@@ -26,49 +26,49 @@ const Constant = require("../lib/constants");
 const { firestore } = require("firebase-admin");
 const Admin = require("mongodb/lib/admin");
 let self = (module.exports = {
-  create_sponsorship: async function (
-    category_id,
-    program_id,
-    mobile_number,
-    name,
-    cohorts,
-    status,
-    is_active,
-    created_at,
-    // id,
-    Reseller_name
-  ) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const data = {
-          category_id: category_id,
-          program_id: program_id,
-          mobile_number: mobile_number + "",
-          name: name,
-          cohorts: cohorts,
-          status: status,
-          is_active: "active",
-          created_at: serverTimestamp(),
-          // reseller_id: id,
-          Reseller_name: Reseller_name,
-        };
-        console.log(data);
-        let result = await addDoc(
-          collection(fireDB, Constant.collection.sponsorship),
-          data
-        );
+  // create_sponsorship: async function (
+  //   category_id,
+  //   program_id,
+  //   mobile_number,
+  //   name,
+  //   cohorts,
+  //   status,
+  //   is_active,
+  //   created_at,
+  //   // id,
+  //   Reseller_name
+  // ) {
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+  //       const data = {
+  //         category_id: category_id,
+  //         program_id: program_id,
+  //         mobile_number: mobile_number + "",
+  //         name: name,
+  //         cohorts: cohorts,
+  //         status: status,
+  //         is_active: "active",
+  //         created_at: serverTimestamp(),
+  //         // reseller_id: id,
+  //         Reseller_name: Reseller_name,
+  //       };
+  //       console.log(data);
+  //       let result = await addDoc(
+  //         collection(fireDB, Constant.collection.sponsorship),
+  //         data
+  //       );
 
-        resolve({
-          message: "Record saved successfuly",
-          code: 200,
-          data: result.id,
-        });
-      } catch (e) {
-        console.log(e);
-        reject(e);
-      }
-    });
-  },
+  //       resolve({
+  //         message: "Record saved successfuly",
+  //         code: 200,
+  //         data: result.id,
+  //       });
+  //     } catch (e) {
+  //       console.log(e);
+  //       reject(e);
+  //     }
+  //   });
+  // },
   create_idpass: async function (Name,Email_Address, password) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -132,14 +132,15 @@ let self = (module.exports = {
       }
     });
   },
-  fetch_all_idpass: async function (Name) {
+  fetch_all_idpass: async function (Name,password,Email_Address) {
     return new Promise(async (resolve, reject) => {
       try {
         let data = [];
         const docRef = query(
           collection(fireDB, "password & id"),
-          where("Name", "==", Name)
-          // where("Name","==", Name)
+          where("Name", "==", Name),
+          where("password", "==", password),
+          where("Email_Address", "==", Email_Address)
         );
         const querySnapshot = await getDocs(docRef);
         querySnapshot.forEach((doc) => {
@@ -147,24 +148,28 @@ let self = (module.exports = {
           delete newData?.["cohorts"];
           data.push(newData);
         });
-
-        if (data.length) {
+        if (querySnapshot.docs.length) {
           resolve({
             code: 200,
             data: data,
           });
-        } else {
+          console.log("login sucessfully")
+        }
+        //  if (data.length) {
+         
+        // } 
+        else  {
           console.log("No such document!");
           resolve({
-            code: 200,
-            data: {},
+            code: 404,
+            data: ("No such document!"),
           });
         }
       } catch (e) {
         console.log(e);
         resolve({
-          code: 200,
-          data: [],
+          code: 404,
+          data: ("No such document!"),
         });
       }
     });
