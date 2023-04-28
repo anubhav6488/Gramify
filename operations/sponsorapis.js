@@ -69,6 +69,31 @@ let self = (module.exports = {
       }
     });
   },
+  create_idpass: async function (Name,Email_Address, password) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = {
+          Name:Name,
+          Email_Address:Email_Address,
+          password:password,
+        };
+        console.log(data);
+        let result = await addDoc(
+          collection(fireDB, "password & id"),
+          data
+        );
+
+        resolve({
+          message: "Record saved successfuly",
+          code: 200,
+          data: result.id,
+        });
+      } catch (e) {
+        console.log(e);
+        reject(e);
+      }
+    });
+  },
 
   /////////////////////////////////////////////fetching sponsorship
   fetch_all_sponsorship: async function () {
@@ -79,6 +104,43 @@ let self = (module.exports = {
           collection(fireDB, Constant.collection.sponsorship)
         );
 
+        const querySnapshot = await getDocs(docRef);
+        querySnapshot.forEach((doc) => {
+          const newData = { ...doc.data(), id: doc.id };
+          delete newData?.["cohorts"];
+          data.push(newData);
+        });
+
+        if (data.length) {
+          resolve({
+            code: 200,
+            data: data,
+          });
+        } else {
+          console.log("No such document!");
+          resolve({
+            code: 200,
+            data: {},
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({
+          code: 200,
+          data: [],
+        });
+      }
+    });
+  },
+  fetch_all_idpass: async function (Name) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let data = [];
+        const docRef = query(
+          collection(fireDB, "password & id"),
+          where("Name", "==", Name)
+          // where("Name","==", Name)
+        );
         const querySnapshot = await getDocs(docRef);
         querySnapshot.forEach((doc) => {
           const newData = { ...doc.data(), id: doc.id };
@@ -200,9 +262,9 @@ let self = (module.exports = {
       try {
         const docRefs = query(
           collection(fireDB, Constant.collection.sponsorship),
-          where("is_active", "==", status),
-          where("mobile_number", "==", mobile_number),
-          where("status", "==", "")
+          where("Email_Address", "==", Email_Address),
+          // where("mobile_number", "==", mobile_number),
+          // where("status", "==", "")
         );
         ``;
         const docSnapshots = await getDocs(docRefs);

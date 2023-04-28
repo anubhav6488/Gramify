@@ -30,8 +30,22 @@ exports.read_all_sponsorship = async (req, res, next) => {
       .send(Response.internal_server_error);
   }
 };
+exports.read_all_idpass = async (req, res, next) => {
+  try {
+    let { Name } = req.body;
+
+    let response = await Operations.fetch_all_idpass(Name);
+
+    res.status(response.code).send(response);
+  } catch (error) {
+    res
+      .status(Response.internal_server_error.code)
+      .send(Response.internal_server_error);
+  }
+};
 
 exports.post_sponsorship = exports.create_sponsorship = async (
+
   req,
   res,
   next
@@ -65,6 +79,39 @@ exports.post_sponsorship = exports.create_sponsorship = async (
       created_at,
       // id,
       Reseller_name
+    );
+
+    res.status(response.code).send(response);
+  } catch (e) {
+    console.log(e);
+
+    res.status(500).send({
+      code: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
+exports.post_idpass = exports.create_idpass = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    let {
+      Name,
+      Email_Address,
+      password,
+    } = req.body;
+    console.log(req.body);
+
+    // let { id } = req.decoded;
+    // console.log("_____________________________________________",req.decoded)
+
+
+    let response = await Operations.create_idpass(
+      Name,
+      Email_Address,
+      password,
     );
 
     res.status(response.code).send(response);
@@ -124,8 +171,8 @@ exports.read_sponsorship_by_status = async (req, res, next) => {
     console.log(mobile_number);
 
     let response = await Operations.fetch_sponsorship_by_status(
-      status,
-      mobile_number
+      Email_Address,
+      password
     );
 
     res.status(response.code).send(response);

@@ -14,6 +14,11 @@ router.get(
     // authenticator.authenticator,
     controller.post_sponsorship
   );
+  router.post(
+    "/sponsorship/idpass",
+    // authenticator.authenticator,
+    controller.post_idpass
+  );
   router.put(
     "/cohort/update",
     // authenticator.authenticator,
@@ -25,8 +30,13 @@ router.get(
     controller.read_all_sponsorship
   );
   router.get(
-    "/get/sponsorship/status/:status",
-    authenticator.authenticator,
+    "/sponsorship/idpass",
+    // authenticator.authenticator,
+    controller.read_all_idpass
+  );
+  router.get(
+    "/get/sponsorship/status/hh",
+    // authenticator.authenticator,
     controller.read_sponsorship_by_status
   );
   
